@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class ParkDao {
@@ -30,7 +31,30 @@ public class ParkDao {
 		}
 	}
 
-	// 1. 입차 check
+	// 1. 관리자 계정 로그인
+	public boolean loginCheck(String id, String pw) {
+		sql = "select * from tbl_manager where user_id=? and user_pw=?";
+		conn = Dao.getConnect();
+		try {
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, id);
+			psmt.setString(2, pw);
+
+			rs = psmt.executeQuery();
+			if (rs.next()) {
+				System.out.println("로그인에 성공했습니다");
+				return true; // 아이디가 있다는 의미
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		System.out.println("아이디 또는 비밀번호가 틀렸습니다");
+		return false;
+	}
+	
+	// 2. 입차 check
 	public boolean add(ParkVO park) {
 		sql = "insert into tbl_parking (car_incnt, car_no, car_sp, car_ex) " + "values(board_seq.nextval,?, ?, ?)";
 		conn = Dao.getConnect();
@@ -53,16 +77,12 @@ public class ParkDao {
 		return false;
 	}
 
-//	 2. 차량 1대 조회 check
+ 	// 3. 차량 1대 조회 check
 	public ParkVO search(String no) {
 		sql = "select * from tbl_parking where car_no = ?";
-		String sql1 = " update tbl_parking" + " set car_outtime = sysdate" + " where car_no = ?";
 		conn = Dao.getConnect();
 
 		try {
-			psmt = conn.prepareStatement(sql1);
-			psmt.setString(1, no);
-			rs = psmt.executeQuery();
 
 			psmt = conn.prepareStatement(sql);
 			psmt.setString(1, no);
@@ -70,9 +90,11 @@ public class ParkDao {
 
 			if (rs.next()) { // if 한건 조회가 된다면
 				ParkVO park = new ParkVO();
+				park.setCarIncnt(rs.getString("car_incnt"));
 				park.setCarNo(rs.getString("car_no"));
 				park.setCarSp(rs.getString("car_sp"));
-				park.setInTime(rs.getString("car_intime"));
+				park.setCarEx(rs.getString("car_ex"));
+				park.setInTime(rs.getDate("car_intime"));
 				return park;
 			}
 		} catch (SQLException e) {
@@ -84,11 +106,16 @@ public class ParkDao {
 
 	}
 
-	// 3. 출차
+	// 4. 출차 check
 	public boolean remove(String no) {
+		String sql1 = " update tbl_parking" + " set car_outtime = sysdate" + " where car_no = ?";
 		sql = "delete from tbl_parking" + " where car_no = ?";
+
 		conn = Dao.getConnect();
 		try {
+			psmt = conn.prepareStatement(sql1);
+			psmt.setString(1, no);
+			rs = psmt.executeQuery();
 
 			psmt = conn.prepareStatement(sql);
 			psmt.setString(1, no);
@@ -106,68 +133,11 @@ public class ParkDao {
 		return false;
 	}
 
-	// 5. 요금확인
-	public long price(String no) {
-		long ptime = 0;
-		sql = "update tbl_parking set car_outtime = sysdate  where car_no = ?";
-		conn = Dao.getConnect();
-		try {
-			psmt = conn.prepareStatement(sql);
-			psmt.setString(1, no);
-			psmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			close();
-		}
-		sql = "select * from tbl_parking where car_no = ?";
-		conn = Dao.getConnect();
-
-		try {
-			psmt = conn.prepareStatement(sql);
-			psmt.setString(1, no);
-
-			rs = psmt.executeQuery();
-			rs.next();
-			long inTime = rs.getDate("car_intime").getTime();
-			long outTime = rs.getDate("car_outtime").getTime();
-
-			ptime = (outTime - inTime) / 1000;
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-//		price = rs.get;
-		return ptime;
-	}
 	// 사용자용 끝
 
 	// 관리자용 추가목록
-
-	// 5. 관리자 로그인
-	public boolean loginCheck(String id, String pw) {
-		sql = "select * from tbl_manager where user_id=? and user_pw=?";
-		conn = Dao.getConnect();
-		try {
-			psmt = conn.prepareStatement(sql);
-			psmt.setString(1, id);
-			psmt.setString(2, pw);
-
-			rs = psmt.executeQuery();
-			if (rs.next()) {
-				System.out.println("로그인에 성공했습니다");
-				return true; // 아이디가 있다는 의미
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			close();
-		}
-		System.out.println("아이디 또는 비밀번호가 틀렸습니다");
-		return false;
-	}
-
-	// 6. 입고된 전체차량 목록
+	
+	// 5. 입고된 전체차량 목록
 	public List<ParkVO> list() {
 		List<ParkVO> list = new ArrayList<>();
 
@@ -184,7 +154,7 @@ public class ParkDao {
 				park.setCarNo(rs.getString("car_no"));
 				park.setCarSp(rs.getString("car_sp"));
 				park.setCarEx(rs.getString("car_ex"));
-				park.setInTime(rs.getString("car_intime"));
+				park.setInTime(rs.getDate("car_intime"));
 
 				list.add(park);
 			}
@@ -196,7 +166,7 @@ public class ParkDao {
 		return list;
 	}
 
-	// 7. 차량정보 수정
+	// 6. 차량정보 수정 check
 	public boolean modify(ParkVO park) {
 		sql = "update tbl_parking " + "set car_sp = nvl(?, car_sp) " + ", car_ex = nvl(?, car_ex)"
 				+ " where car_no = ?";
