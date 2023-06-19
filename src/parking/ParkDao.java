@@ -52,7 +52,7 @@ public class ParkDao {
 		System.out.println("아이디 또는 비밀번호가 틀렸습니다");
 		return false;
 	}
-	
+
 	// 2. 입차 check
 	public boolean add(ParkVO park) {
 		sql = "insert into tbl_parking (car_incnt, car_no, car_sp, car_ex) " + "values(board_seq.nextval,?, ?, ?)";
@@ -76,7 +76,7 @@ public class ParkDao {
 		return false;
 	}
 
- 	// 3. 차량 1대 조회 check
+	// 3. 차량 1대 조회 check
 	public ParkVO search(String no) {
 		sql = "select * from tbl_parking where car_no = ?";
 		conn = Dao.getConnect();
@@ -132,11 +132,29 @@ public class ParkDao {
 		return false;
 	}
 
+	// 5. 차량 중복체크
+	public boolean carCk(String car_no) {
+		sql = "select * from tbl_parking where car_no = ?";
+		conn = Dao.getConnect();
+		try {
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, car_no);
+
+			rs = psmt.executeQuery();
+			if (rs.next()) {
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
 	// 사용자용 끝
 
 	// 관리자용 추가목록
-	
-	// 5. 입고된 전체차량 목록
+
+	// 6. 입고된 전체차량 목록
 	public List<ParkVO> list() {
 		List<ParkVO> list = new ArrayList<>();
 
@@ -165,7 +183,7 @@ public class ParkDao {
 		return list;
 	}
 
-	// 6. 차량정보 수정 check
+	// 7. 차량정보 수정 check
 	public boolean modify(ParkVO park) {
 		sql = "update tbl_parking " + "set car_sp = nvl(?, car_sp) " + ", car_ex = nvl(?, car_ex)"
 				+ " where car_no = ?";
@@ -190,5 +208,99 @@ public class ParkDao {
 		return false;
 	}
 
-	// 7. 관리자계정 추가
+	// 8. 관리자 계정 추가
+	public boolean mngAdd(ParkVO park) {
+		{
+			sql = "insert into tbl_manager (user_id, user_pw, user_name) " + "values(?, ?, ?)";
+			conn = Dao.getConnect();
+			try {
+				psmt = conn.prepareStatement(sql);
+				psmt.setString(1, park.getUserId());
+				psmt.setString(2, park.getUserPw());
+				psmt.setString(3, park.getUserName());
+
+				int r = psmt.executeUpdate();
+				if (r > 0) {
+					return true;
+				}
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				close();
+			}
+			return false;
+		}
+	}
+
+	// 9. 관리자 계정 중복체크
+	public boolean mngCk(String user_id) {
+		sql = "select * from tbl_manager where user_id = ?";
+		conn = Dao.getConnect();
+		try {
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, user_id);
+
+			rs = psmt.executeQuery();
+			if (rs.next()) {
+				return true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	// 10. 관리자 계정 삭제
+	public boolean mngRv(String user_id) {
+
+		sql = "delete from tbl_manager" + " where user_id = ?";
+
+		conn = Dao.getConnect();
+		try {
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, user_id);
+			rs = psmt.executeQuery();
+
+			int r = psmt.executeUpdate();
+			if (r > 0) {
+				return false;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		return true;
+	}
+
+	// 11. 관리자 계정 목록보기
+	public List<ParkVO> mngList() {
+		List<ParkVO> mnglist = new ArrayList<>();
+
+		sql = "select * from tbl_manager";
+		conn = Dao.getConnect();
+
+		try {
+			psmt = conn.prepareStatement(sql);
+			rs = psmt.executeQuery();
+
+			while (rs.next()) {
+				ParkVO park = new ParkVO();
+
+				park.setUserId(rs.getString("user_id"));
+				park.setUserPw(rs.getString("user_pw"));
+				park.setUserName(rs.getString("user_name"));
+
+				mnglist.add(park);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		return mnglist;
+	}
 }

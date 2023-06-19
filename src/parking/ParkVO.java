@@ -19,9 +19,12 @@ public class ParkVO {
 	private Date inTime; // 입차시간
 	private String carEx; // 특이사항
 	private String outTime; // 출차시간
+	private String userId;
+	private String userPw;
+	private String userName;
 
 
-	
+	// 차량 조회
 	public String toEx() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String str = sdf.format(new Date());
@@ -37,11 +40,12 @@ public class ParkVO {
 				+ money + " 원 '"+ "이며\n" + "남기신 메모사항은 ' " + this.carEx + " '입니다";
 	}
 
+	
+	// 관리자 차량 일괄 조회
 	@Override
 	public String toString() {
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String str = sdf.format(new Date());
 		long sec = (System.currentTimeMillis() - getInTime().getTime()) / (1000);
 		long min = (sec / 60) % 60;
 		long hour = sec / (60 * 60);
@@ -49,7 +53,13 @@ public class ParkVO {
 		DecimalFormat df = new DecimalFormat("###,###");
 		String money = df.format(rate);
 		
-		return "입고순서" + this.carIncnt + " | 차량번호:" + this.carNo +" | 차량위치:" + this.carSp + " | 입차시간:"+ sdf.format(this.inTime) + " | 현재 요금" + money + "원" ;
+		return "입고순서: " + this.carIncnt + " | 차량번호: " + this.carNo +" | 차량위치: " + this.carSp + " | 입차시간: "+ sdf.format(this.inTime) + " | 현재 요금: " + money + "원" + " | 특이사항: " + this.carEx ;
+	}
+	
+	
+	// 관리자 ID 조회
+	public String mngEx() {
+		return "관리자 ID: " + this.userId + " | 관리자 PW: "  + this.userPw + " | 관리자 이름: " + this.userName;
 	}
 
 }

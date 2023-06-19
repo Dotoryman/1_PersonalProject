@@ -5,14 +5,15 @@ import java.util.Scanner;
 public class ParkMenu {
 	ParkDao dao = new ParkDao();
 	static Scanner scn = new Scanner(System.in);
-	ParkProc proc = new ParkProc();
+	static ParkProc proc = new ParkProc();
 	static int menu = 0;
 	boolean runUser = false;
 	boolean runMng = false;
 	boolean run = true;
 	static boolean runSpc = true;
+	static boolean runMm = true;
 	int maxSpace = 30;
-
+	// 메인메뉴
 	public void Menu() {
 //		시작메뉴
 
@@ -24,7 +25,7 @@ public class ParkMenu {
 			} else {
 				System.out.println("주차공간은 " + space + " 자리 남았습니다.");
 			}
-			System.out.println("환영합니다 우당탕탕 주차장입니다.");
+			System.out.println("환영합니다 성내동 공영 주차장입니다.");
 			System.out.println("사용자를 선택하세요. \n1. 주차장 이용자입니다. \n2. 주차장 관리자입니다.");
 			int num = scn.nextInt();
 			scn.nextLine();
@@ -75,7 +76,7 @@ public class ParkMenu {
 			while (runMng) {
 				System.out.println("관리자입니다.");
 				System.out.println("사용하실 메뉴를 선택하세요");
-				System.out.println("1.차량목록보기  2.차량조회  3.출차 처리하기  4.주차정보 수정  5.시작페이지로 돌아가기  6. 시스템종료");
+				System.out.println("1.차량목록보기  2.차량조회  3.출차 처리하기  4.주차정보 수정  5.관리자 전용메뉴  6.시작페이지로 돌아가기  7. 시스템종료");
 				try {
 					menu = Integer.parseInt(scn.nextLine());
 					switch (menu) {
@@ -92,9 +93,13 @@ public class ParkMenu {
 						proc.carModi();
 						break;
 					case 5:
-						runMng = false;
+						mngMenu();
+						runMm = true;
 						break;
 					case 6:
+						runMng = false;
+						break;
+					case 7:
 						runMng = false;
 						run = false;
 						break;
@@ -110,7 +115,8 @@ public class ParkMenu {
 		}
 		System.out.println("시스템이 정상적으로 종료되었습니다.");
 	}
-
+	
+	// 주차구역 선택 메뉴
 	public static String smallMenu() {
 		
 		while (runSpc) {
@@ -133,4 +139,35 @@ public class ParkMenu {
 		}
 		return null;
 	}
+	
+	// 관리자 페이지 선택 메뉴
+	public static String mngMenu() {
+		while (runMm) {
+			System.out.println("관리자 메뉴입니다. 사용하실 기능을 선택하세요.");
+			System.out.println("1. 관리자 ID 생성  2. 관리자 ID 제거  3. 관리자 ID 목록보기  4. 이전페이지로 돌아가기");
+			try {
+				menu = Integer.parseInt(scn.nextLine());
+				switch (menu) {
+				case 1:
+					proc.mngAdd();
+					break;
+				case 2:
+					proc.mngRv();
+					break;
+				case 3:
+					proc.mngList();
+					break;
+				case 4:
+					runMm = false;
+					break;
+				}
+			} catch (Exception e) {
+				System.out.println("올바른 메뉴번호를 입력해주세요");
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
+
 }
