@@ -13,7 +13,7 @@ public class ParkDao {
 	ResultSet rs;
 	String sql;
 
-	// 0. close 클래스 check
+	// 0. close 클래스 
 	private void close() {
 		try {
 			if (conn != null) {
