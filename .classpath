@@ -8,5 +8,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/dev/lombok.jar"/>
 	<classpathentry kind="lib" path="C:/dev/ojdbc10-19.19.0.0.jar"/>
+	<classpathentry kind="lib" path="C:/dev/activation.jar"/>
+	<classpathentry kind="lib" path="C:/dev/mail-1.4.7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
