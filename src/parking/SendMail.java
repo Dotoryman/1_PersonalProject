@@ -52,7 +52,7 @@ public class SendMail {
 	public void sendMail(String to, String title, String content) {
 		Message msg = new MimeMessage(setting());
 		try {
-			msg.setFrom(new InternetAddress(FROM, "Developer", ENCODING));
+			msg.setFrom(new InternetAddress(FROM, "Dotoryman", ENCODING));
 			msg.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 			msg.setSubject(title);
 			msg.setContent(content, "text/html;charset=utf-8");
