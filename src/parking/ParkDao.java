@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class ParkDao {
@@ -191,4 +190,5 @@ public class ParkDao {
 		return false;
 	}
 
+	// 7. 관리자계정 추가
 }

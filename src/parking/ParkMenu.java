@@ -4,16 +4,18 @@ import java.util.Scanner;
 
 public class ParkMenu {
 	ParkDao dao = new ParkDao();
-	Scanner scn = new Scanner(System.in);
+	static Scanner scn = new Scanner(System.in);
 	ParkProc proc = new ParkProc();
-	int menu = 0;
+	static int menu = 0;
 	boolean runUser = false;
 	boolean runMng = false;
 	boolean run = true;
+	static boolean runSpc = true;
 	int maxSpace = 30;
 
 	public void Menu() {
 //		시작메뉴
+
 		while (run) {
 
 			int space = (maxSpace - dao.list().size());
@@ -73,7 +75,7 @@ public class ParkMenu {
 			while (runMng) {
 				System.out.println("관리자입니다.");
 				System.out.println("사용하실 메뉴를 선택하세요");
-				System.out.println("1.차량목록보기  2.차량조회  3.출차 처리하기  4.주차정보 수정 5.시작페이지로 돌아가기 6. 시스템종료");
+				System.out.println("1.차량목록보기  2.차량조회  3.출차 처리하기  4.주차정보 수정  5.시작페이지로 돌아가기  6. 시스템종료");
 				try {
 					menu = Integer.parseInt(scn.nextLine());
 					switch (menu) {
@@ -107,5 +109,28 @@ public class ParkMenu {
 
 		}
 		System.out.println("시스템이 정상적으로 종료되었습니다.");
+	}
+
+	public static String smallMenu() {
+		
+		while (runSpc) {
+			try {
+				menu = Integer.parseInt(scn.nextLine());
+				switch (menu) {
+				case 1:
+					return "A 구역";
+				case 2:
+					return "B 구역";
+				case 3:
+					return "C 구역";
+				case 4:
+					return "장애인 주차 구역";
+				}
+			} catch (Exception e) {
+				System.out.println("올바른 메뉴번호를 입력해주세요");
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 }

@@ -1,5 +1,6 @@
 package parking;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -7,19 +8,22 @@ import java.util.Scanner;
 
 public class ParkProc {
 	private ParkDao dao = new ParkDao();
-	private ParkVO prk;
+	private ParkVO park = new ParkVO();
 	private Scanner scn = new Scanner(System.in);
-	private String loginId;
 
 	public void carIn() {
 		System.out.printf("입차하는 차량의 차량번호를 입력하세요");
 		String no = scn.nextLine();
-		System.out.printf("주차하실 차량의 위치를 입력하세요");
-		String sp = scn.nextLine();
+		while(dao.equals(park)) {
+			System.out.println("이미 입차한 차량입니다.");
+		}
+		
+		
+		System.out.println("주차하실 구역을 선택하세요. \n1. A 구역 \n2. B 구역 \n3. C 구역 \n4. 장애인 전용 주차구역");
+		String sp = ParkMenu.smallMenu();
 		System.out.printf("특이사항이 있으시다면 입력하세요");
 		String ex = scn.nextLine();
 
-		ParkVO park = new ParkVO();
 		park.setCarNo(no);
 		park.setCarSp(sp);
 		park.setCarEx(ex);
@@ -34,7 +38,6 @@ public class ParkProc {
 	public void carSearch() {
 		System.out.printf("조회하려는 차량번호를 입력하세요");
 		String no = scn.nextLine();
-
 		ParkVO park = dao.search(no);
 		if (park == null) {
 			System.out.println("해당 번호의 차량은 입차기록이 없습니다.");
@@ -51,10 +54,13 @@ public class ParkProc {
 		if (dao.remove(no)) {
 			long sec = (System.currentTimeMillis() - p.getInTime().getTime()) / (1000);
 			long min = (sec / 60) % 60;
-			long hour = min / 60;
+			long hour = sec / (60 * 60);
 			long rate = hour * 6000 + min * 100;
-
-			System.out.println("' "+ p.getCarNo() + " ' 번 차량의 주차시간은 ' " + min + " ' 분이며,\n" + "주차 요금은 ' " + rate + " ' 원입니다.");
+			DecimalFormat df = new DecimalFormat("###,###");
+			String money = df.format(rate);
+			
+			System.out.println(
+					"' " + p.getCarNo() + " ' 번 차량의 주차시간은 ' " + hour + " 시간 " + min + " ' 분이며,\n" + "주차 요금은 ' " + money + " ' 원입니다.");
 			System.out.println("출차처리가 완료되었습니다. 안녕히 가십시오");
 		} else {
 			System.out.println("해당 번호의 차량은 입차기록이 없습니다.");
@@ -62,7 +68,7 @@ public class ParkProc {
 	}
 
 	public void carList() {
-		
+
 		List<ParkVO> list = dao.list();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String str = sdf.format(new Date());
@@ -82,8 +88,8 @@ public class ParkProc {
 	public void carModi() {
 		System.out.printf("정보를 수정하려는 차량번호를 입력하세요");
 		String no = scn.nextLine();
-		System.out.printf("선택하신 차량의 수정할 위치를 입력하세요");
-		String sp = scn.nextLine();
+		System.out.println("수정하실 구역을 선택하세요. \n1. A 구역 \n2. B 구역 \n3. C 구역 \n4. 장애인 전용 주차구역");
+		String sp = ParkMenu.smallMenu();
 		System.out.printf("선택하신 차량의 수정할 특이사항을 입력하세요");
 		String ex = scn.nextLine();
 
