@@ -1,5 +1,6 @@
 package parking;
 
+import java.util.Random;
 import java.util.Scanner;
 
 public class ParkMenu {
@@ -12,7 +13,8 @@ public class ParkMenu {
 	boolean run = true;
 	static boolean runSpc = true;
 	static boolean runMm = true;
-	int maxSpace = 30;
+	int maxSpace = 20;
+
 	// 메인메뉴
 	public void Menu() {
 //		시작메뉴
@@ -20,12 +22,87 @@ public class ParkMenu {
 		while (run) {
 
 			int space = (maxSpace - dao.list().size());
+
+			// 주차장 크기 설정
+			int width = 10; // 주차장 가로 크기
+			int height = 2; // 주차장 세로 크기
+
+			String[][] list = new String[height][width]; // 주차 공간을 저장하는 2차원 배열 생성
+
+			// 주차 공간을 초기화하여 빈 공간으로 설정
+			for (int i = 0; i < height; i++) {
+				for (int j = 0; j < width; j++) {
+					list[i][j] = "O";
+				}
+			}
+
+			int maxCars = Math.min(dao.list().size(), width * height); // 주차 가능한 최대 차량 개수
+
+			// 주차된 차량의 위치 설정
+			Random random = new Random();
+			for (int count = 0; count < maxCars; count++) {
+				int row, col;
+				do {
+					row = random.nextInt(height); // 랜덤한 세로 위치
+					col = random.nextInt(width); // 랜덤한 가로 위치
+				} while (!list[row][col].equals("O")); // 이미 주차된 공간이면 다시 위치 선택
+
+				list[row][col] = "X"; // 주차된 차량 표시
+			}
+
+			// 주차장 모양 출력
+			System.out.println("------------------- 성내공영주차장 주차현황 ---------------------");
 			if (space <= 0) {
 				System.out.println("현재 모든 주차공간이 만차입니다.");
 			} else {
-				System.out.println("주차공간은 " + space + " 자리 남았습니다.");
+				System.out.println("                주차공간은 ' " + space + " ' 자리 남았습니다");
 			}
-			System.out.println("환영합니다 성내동 공영 주차장입니다.");
+			System.out.println("===========================================================");
+			System.out.println("            A 구역           |            B 구역         ");
+			for (int i = 0; i < height; i++) {
+
+				for (int j = 0; j < width; j++) {
+					System.out.print("[" + list[i][j] + "]");
+
+					if (j < width - 1) {
+						// 가로 줄 사이의 공백 출력
+						for (int k = 0; k < 3; k++) {
+
+							System.out.print(" ");
+						}
+					}
+				}
+
+				System.out.println(" "); // 오른쪽에 "출구" 출력
+
+				if (i < height - 1) {
+					// 세로 줄 사이의 공백 및 가운데 화살표 출력
+					System.out.println();
+					System.out.print("입구 "); // 왼쪽에 "입구" 출력
+					for (int k = 0; k < width * 5 - 4; k++) {
+						if (k == (width * 2 - 1) / 2) {
+							System.out.print("->");
+						} else if (k == (width * 4 - 1) / 2) {
+							System.out.print("->");
+						} else if (k == (width * 6 - 1) / 2) {
+							System.out.print("->");
+						} else if (k == (width * 8 - 1) / 2) {
+							System.out.print("->");
+						} else {
+							System.out.print(" ");
+						}
+					}
+					System.out.print("출구 ");
+					System.out.println();
+					System.out.println();
+					
+				}
+			}
+			System.out.println("            C 구역           |         장애인 주차구역     ");
+			System.out.println("===========================================================");
+
+			
+			System.out.println("               환영합니다 성내동 공영 주차장입니다");
 			System.out.println("사용자를 선택하세요. \n1. 주차장 이용자입니다. \n2. 주차장 관리자입니다.");
 			int num = scn.nextInt();
 			scn.nextLine();
@@ -47,7 +124,7 @@ public class ParkMenu {
 
 //			사용자 메뉴
 			while (runUser) {
-				System.out.println("유저입니다.");
+				System.out.println("고객 메뉴입니다.");
 				System.out.println("사용하실 메뉴를 선택하세요");
 				System.out.println("1.입차하기  2.내차 찾기  3.출차하기  4.시작페이지로 돌아가기");
 				try {
@@ -74,7 +151,7 @@ public class ParkMenu {
 
 //			관리자 메뉴
 			while (runMng) {
-				System.out.println("관리자입니다.");
+				System.out.println("관리자 메뉴입니다.");
 				System.out.println("사용하실 메뉴를 선택하세요");
 				System.out.println("1.차량목록보기  2.차량조회  3.출차 처리하기  4.주차정보 수정  5.관리자 전용메뉴  6.시작페이지로 돌아가기  7. 시스템종료");
 				try {
@@ -115,10 +192,10 @@ public class ParkMenu {
 		}
 		System.out.println("시스템이 정상적으로 종료되었습니다.");
 	}
-	
+
 	// 주차구역 선택 메뉴
 	public static String smallMenu() {
-		
+
 		while (runSpc) {
 			try {
 				menu = Integer.parseInt(scn.nextLine());
@@ -139,7 +216,7 @@ public class ParkMenu {
 		}
 		return null;
 	}
-	
+
 	// 관리자 페이지 선택 메뉴
 	public static String mngMenu() {
 		while (runMm) {
@@ -169,5 +246,6 @@ public class ParkMenu {
 		return null;
 	}
 
+	// 시작칸 인터페이스
 
 }
