@@ -43,7 +43,6 @@ public class MakingPlan {
 	
 	
 	
-//	토큰 : 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
 //
 //
 //
