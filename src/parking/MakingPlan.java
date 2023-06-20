@@ -43,9 +43,7 @@ public class MakingPlan {
 	
 	
 	
-//
-//
-//
+
 //	create user proj identified by proj;
 //	grant connect, resource to proj;
 //
