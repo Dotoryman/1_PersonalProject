@@ -36,4 +36,45 @@ public class MakingPlan {
 //	7. 관리자 아이디 추가/삭제
 //	8. 차량번호 중복시 다시입력시키기
 	
+	
+	
+	
+	
+	
+	
+	
+//	토큰 : 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
+//
+//
+//
+//	create user proj identified by proj;
+//	grant connect, resource to proj;
+//
+//
+//
+//	select * from tab;
+//
+//	create table tbl_parking (
+//	car_incnt number,
+//	car_no varchar2(200) primary key,
+//	car_sp varchar2(200),
+//	car_ex varchar2(400),
+//	car_intime date default sysdate
+//	car_outtime date
+//	);
+//	create sequence board_seq;
+//
+//	select * from tbl_parking;
+//
+//	alter table parking rename to tbl_parking;
+//
+//	create table tbl_manager (
+//	user_id varchar2(100) primary key,
+//	user_pw varchar2(100) not null,
+//	user_name varchar2(100) not null
+//	);
+//
+//	insert into tbl_manager
+//	values ('master', '1111','test');
+//	commit;
 }
