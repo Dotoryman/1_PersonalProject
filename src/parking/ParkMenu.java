@@ -15,41 +15,37 @@ public class ParkMenu {
 	static boolean runMm = true;
 	int maxSpace = 20;
 
-	// 메인메뉴
+//	메인메뉴
 	public void Menu() {
 //		시작메뉴
 
 		while (run) {
-
+//			최대 주차 대수  
 			int space = (maxSpace - dao.list().size());
+//		    주차장 크기 설정
+			int width = 10;
+			int height = 2; 
+			String[][] list = new String[height][width];
 
-			// 주차장 크기 설정
-			int width = 10; // 주차장 가로 크기
-			int height = 2; // 주차장 세로 크기
-
-			String[][] list = new String[height][width]; // 주차 공간을 저장하는 2차원 배열 생성
-
-			// 주차 공간을 초기화하여 빈 공간으로 설정
+//			주차 공간
 			for (int i = 0; i < height; i++) {
 				for (int j = 0; j < width; j++) {
 					list[i][j] = "O";
 				}
 			}
+//			최대 주차값
+			int maxCars = Math.min(dao.list().size(), width * height);
 
-			int maxCars = Math.min(dao.list().size(), width * height); // 주차 가능한 최대 차량 개수
-
-			// 주차된 차량의 위치 설정
+//			주차된 차량의 위치 설정
 			Random random = new Random();
 			for (int count = 0; count < maxCars; count++) {
 				int row, col;
 				do {
-					row = random.nextInt(height); // 랜덤한 세로 위치
-					col = random.nextInt(width); // 랜덤한 가로 위치
-				} while (!list[row][col].equals("O")); // 이미 주차된 공간이면 다시 위치 선택
-
-				list[row][col] = "X"; // 주차된 차량 표시
+					row = random.nextInt(height); 
+					col = random.nextInt(width);
+				} while (!list[row][col].equals("O")); 
+				list[row][col] = "X"; //do while문을 이용해 이미 주차 배치된 공간일땐 재배치하도록
 			}
-
 			// 주차장 모양 출력
 			System.out.println("------------------- 성내공영주차장 주차현황 ---------------------");
 			if (space <= 0) {
@@ -60,23 +56,18 @@ public class ParkMenu {
 			System.out.println("===========================================================");
 			System.out.println("            A 구역           |            B 구역         ");
 			for (int i = 0; i < height; i++) {
-
 				for (int j = 0; j < width; j++) {
 					System.out.print("[" + list[i][j] + "]");
-
 					if (j < width - 1) {
-						// 가로 줄 사이의 공백 출력
+						// 가로 공백
 						for (int k = 0; k < 3; k++) {
-
 							System.out.print(" ");
 						}
 					}
 				}
-
-				System.out.println(" "); // 오른쪽에 "출구" 출력
-
+				System.out.println(" ");
 				if (i < height - 1) {
-					// 세로 줄 사이의 공백 및 가운데 화살표 출력
+					// 세로 공백 및 가운데 화살표 출력
 					System.out.println();
 					System.out.print("입구 "); // 왼쪽에 "입구" 출력
 					for (int k = 0; k < width * 5 - 4; k++) {
@@ -95,13 +86,10 @@ public class ParkMenu {
 					System.out.print("출구 ");
 					System.out.println();
 					System.out.println();
-					
 				}
 			}
 			System.out.println("            C 구역           |         장애인 주차구역     ");
 			System.out.println("===========================================================");
-
-			
 			System.out.println("               환영합니다 성내동 공영 주차장입니다");
 			System.out.println("사용자를 선택하세요. \n1. 주차장 이용자입니다. \n2. 주차장 관리자입니다.");
 			int num = scn.nextInt();

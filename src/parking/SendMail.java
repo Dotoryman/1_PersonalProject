@@ -52,6 +52,7 @@ public class SendMail {
 	public void sendMail(String to, String title, String content) {
 		Message msg = new MimeMessage(setting());
 		try {
+			System.out.println("처리중입니다...");
 			msg.setFrom(new InternetAddress(FROM, "Dotoryman", ENCODING));
 			msg.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 			msg.setSubject(title);

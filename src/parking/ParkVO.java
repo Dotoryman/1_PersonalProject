@@ -19,9 +19,9 @@ public class ParkVO {
 	private Date inTime; // 입차시간
 	private String carEx; // 특이사항
 	private String outTime; // 출차시간
-	private String userId;
-	private String userPw;
-	private String userName;
+	private String userId; //관리자 id
+	private String userPw; //관리자 pw
+	private String userName; //관리자 이름
 
 
 	// 차량 조회
