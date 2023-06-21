@@ -51,7 +51,7 @@ public class ParkMenu {
 			if (space <= 0) {
 				System.out.println("현재 모든 주차공간이 만차입니다.");
 			} else {
-				System.out.println("                주차공간은 ' " + space + " ' 자리 남았습니다");
+				System.out.println("          주차공간은 총 20 자리 중 ' " + space + " ' 자리 남았습니다");
 			}
 			System.out.println("===========================================================");
 			System.out.println("            A 구역           |            B 구역         ");
